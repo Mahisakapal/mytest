@@ -41,9 +41,9 @@ metadata:
 spec:
   containers:
     - name: web
-      image: nginx
+      image: jenkins/jenkins:lts
       volumeMounts:
-      - mountPath: "/Home/"
+      - mountPath: "/"
         name: contaner-volume
   volumes:
     - name: contaner-volume
