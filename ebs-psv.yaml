@@ -1,24 +1,24 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: jenkins-root-volume
-  namespace: jenkins
+  name: my-root-volume
+  namespace: jenkins                    # make sure you have namespace jenkins created if not remove this line  
   labels:
     type: aws-ebs-volume
 spec:
   storageClassName: ""
   capacity:
-    storage: 20Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteMany
   awsElasticBlockStore:
-    volumeID: vol-23ddk32mda      # your volume id
+    volumeID: vol-23ddk32mda      # your volume id you will get this form aws 
     fsType: ext4
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jenkins-volume-claim
+  name: my-volume-claim
   namespace: jenkins
   labels:
     type: aws-ebs-volume
@@ -28,5 +28,24 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 20Gi
-  volumeName: jenkins-root-volume
+      storage: 5Gi
+  volumeName: my-root-volume
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+  namespace: jenkins
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: nginx
+      volumeMounts:
+      - mountPath: "/Home/"
+        name: contaner-volume
+  volumes:
+    - name: contaner-volume
+      persistentVolumeClaim:
+         claimName: my-volume-claim
